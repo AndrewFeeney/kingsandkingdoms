@@ -20,7 +20,7 @@ class MapController extends Controller
             'width' => 'integer'
         ]);
 
-        $tiles = $this->map->getTileSet($request->y, $request->y, $request->width);
+        $tiles = $this->map->getTileSet($request->x, $request->y, $request->width);
 
         return response()->json([
             'tiles' => $tiles->toArray()

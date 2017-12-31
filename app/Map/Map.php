@@ -6,19 +6,16 @@ use App\Models\Tile;
 
 class Map
 {
-    public function getTileSet($x, $y, $width = 15)
+    public function getTileSet($topLeftX, $topLeftY, $width = 25)
     {
-        $topLeftX = $x - floor($width / 2);
-        $topLeftY = $y - floor($width / 2);
-
         $tiles = collect();
-
-        for ($x = $topLeftX; $x < $topLeftX + $width; $x++) {
-            $column = collect();
-            for ($y = $topLeftY; $y < $topLeftY + $width; $y++) {
-                $column->push(Tile::getCoordinates($x, $y));
+        for ($y = $topLeftY; $y < $topLeftY + $width; $y++) {
+            $row = collect();
+            for ($x = $topLeftX; $x < $topLeftX + $width; $x++) {
+                $row->push(Tile::getCoordinates($x, $y));
             }
-            $tiles->push($column);
+
+            $tiles->push($row);
         }
 
         return collect($tiles);

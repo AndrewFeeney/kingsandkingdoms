@@ -3,34 +3,93 @@
 namespace Tests\Feature\Acceptance\Map;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class IndexMapTest extends TestCase
 {
     use DatabaseMigrations;
 
     /** @test */
-    public function a_guest_may_query_a_map_by_the_center_tile()
+    public function a_guest_may_query_a_map_of_width_1()
     {
         $response = $this->json('get', 'map', [
             'x' => 0,
             'y' => 0,
-            'width' => 3
+            'width' => 1
         ]);
 
-        $response->assertJson([
-            'tiles' => [
-                [
-                    'x' => -1,
-                    'y' => -1,
-                ],
-                [
-                    'x' => -1,
-                    'y' => 0,
-                ]
-            ]
+        $response->assertJsonFragment([
+            'x' => 0,
+            'y' => 0,
+        ]);
+    }
+
+    /** @test */
+    public function a_guest_may_query_a_map_of_width_1_by_the_top_left_tile()
+    {
+        $response = $this->json('get', 'map', [
+            'x' => 1,
+            'y' => 0,
+            'width' => 1
+        ]);
+
+        $response->assertJsonFragment([
+            'x' => 1,
+            'y' => 0,
+        ]);
+    }
+
+    /** @test */
+    public function a_guest_may_query_a_map_of_width_2()
+    {
+        $response = $this->json('get', 'map', [
+            'x' => 0,
+            'y' => 0,
+            'width' => 2
+        ]);
+
+        $response->assertJsonFragment([
+            'x' => 0,
+            'y' => 0,
+        ]);
+        $response->assertJsonFragment([
+            'x' => 0,
+            'y' => 1,
+        ]);
+        $response->assertJsonFragment([
+            'x' => 1,
+            'y' => 0,
+        ]);
+        $response->assertJsonFragment([
+            'x' => 1,
+            'y' => 1,
+        ]);
+    }
+
+    /** @test */
+    public function a_guest_may_query_a_map_of_width_2_by_the_top_left_tile()
+    {
+        $response = $this->json('get', 'map', [
+            'x' => 1,
+            'y' => 1,
+            'width' => 2
+        ]);
+
+        $response->assertJsonFragment([
+            'x' => 1,
+            'y' => 1,
+        ]);
+        $response->assertJsonFragment([
+            'x' => 1,
+            'y' => 2,
+        ]);
+        $response->assertJsonFragment([
+            'x' => 2,
+            'y' => 1,
+        ]);
+        $response->assertJsonFragment([
+            'x' => 2,
+            'y' => 2,
         ]);
     }
 }

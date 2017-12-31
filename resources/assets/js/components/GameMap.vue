@@ -1,11 +1,14 @@
 <template>
-    <table>
-        <tr v-for="column in tiles">
-            <td v-for="tile in column">
-                <div class="tile" :class="tile.terrain">
-                </div>
-            </td>
-        </tr>
+    <div class="game-map">
+        <table>
+            <tr v-for="column in tiles">
+                <td v-for="tile in column">
+                    <div class="tile" :class="tile.terrain">
+                    </div>
+                </td>
+            </tr>
+        </table>
+        X: {{ x }}, Y: {{ y }}
     </div>
 </template>
 
@@ -13,6 +16,11 @@
 
 $grassland: #005C09;
 $grassland: #005C09;
+
+.game-map table {
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .tile {
     width: 40px;
@@ -40,22 +48,55 @@ $grassland: #005C09;
 </style>
 
 <script>
+    import eventsBus from './../app/Events/EventsBus.js';
+
+    window.events = new Vue();
+
     export default {
         data() {
             return  {
-                tiles: []
+                tiles: [],
+                x: 0,
+                y: 0,
+                eventsBus: eventsBus,
             }
         },
-        mounted() {
-            this.$http.get('/map', {
-                params: {
-                    x: 0,
-                    y: 0,
-                    width: 15
-                }
-            }).then(response => {
-                this.tiles = response.body.tiles;
+        created() {
+            this.eventsBus.registerAll();
+
+            var _this = this;
+
+            events.$on('x.shift', function(newValue) {
+                _this.x = _this.x + newValue;
             });
+            events.$on('y.shift', function(newValue) {
+                _this.y = _this.y + newValue;
+            });
+        },
+        mounted() {
+            this.getBoardState();
+        },
+        watch: {
+            x(newValue) {
+                console.log(newValue);
+                this.getBoardState();
+            },
+            y(newValue) {
+                this.getBoardState();
+            }
+        },
+        methods: {
+            getBoardState() {
+                this.$http.get('/map', {
+                    params: {
+                        x: this.x,
+                        y: this.y,
+                        width: 25
+                    }
+                }).then(response => {
+                    this.tiles = response.body.tiles;
+                });
+            }
         }
     }
 </script>
