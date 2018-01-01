@@ -3,7 +3,7 @@
         <table>
             <tr v-for="column in tiles">
                 <td v-for="tile in column">
-                    <div class="tile" :class="tile.terrain">
+                    <div class="tile" :class="board.terrainClasses(tile)">
                     </div>
                 </td>
             </tr>
@@ -34,21 +34,22 @@ $grassland: #005C09;
     }
     &.mountain {
         background-image: url('/images/mountains.png');
-        background-position: right 40px;
+        background-position: right 20px;
     }
     &.forest {
         background-image: url('/images/forest.png');
     }
     &.lake {
         background-image: url('/images/water.png');
-        background-position: right -800px top;
+        background-position: right -700px top;
     }
 }
 
 </style>
 
 <script>
-    import eventsBus from './../app/Events/EventsBus.js';
+    import EventsBus from './../app/Events/EventsBus.js';
+    import Board from './../app/Board/Board.js';
 
     window.events = new Vue();
 
@@ -58,7 +59,8 @@ $grassland: #005C09;
                 tiles: [],
                 x: 0,
                 y: 0,
-                eventsBus: eventsBus,
+                eventsBus: EventsBus,
+                board: null,
             }
         },
         created() {
@@ -78,11 +80,13 @@ $grassland: #005C09;
         },
         watch: {
             x(newValue) {
-                console.log(newValue);
                 this.getBoardState();
             },
             y(newValue) {
                 this.getBoardState();
+            },
+            tiles(newValue) {
+                this.board = new Board(newValue);
             }
         },
         methods: {
@@ -96,7 +100,23 @@ $grassland: #005C09;
                 }).then(response => {
                     this.tiles = response.body.tiles;
                 });
+            },
+            findTile(x, y) {
+                var tile;
+
+                this.tiles.forEach(function (row) {
+                    row.forEach(function (rowTile) {
+                        if (rowTile.x == x && rowTile.y == y) {
+                            tile = rowTile;
+                        }
+                    });
+                });
+
+                return tile;
+            },
+            terrainClasses(tile) {
+                return tile.terrain;
             }
-        }
+        },
     }
 </script>
