@@ -9,5 +9,6 @@ export default {
     },
 
     pieceSelected(piece) {
+        window.app.game.selectPiece(piece);
     }
 }

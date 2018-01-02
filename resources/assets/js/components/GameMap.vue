@@ -22,7 +22,6 @@
 </style>
 
 <script>
-    import EventsBus from './../app/Events/EventsBus.js';
     import Board from './../app/Board/Board.js';
     import Piece from './pieces/Piece.vue';
 
@@ -38,13 +37,10 @@
                 tiles: [],
                 x: 0,
                 y: 0,
-                eventsBus: EventsBus,
                 board: null,
             }
         },
         created() {
-            this.eventsBus.registerAll();
-
             var _this = this;
 
             events.$on('x.shift', function(newValue) {

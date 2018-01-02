@@ -2,12 +2,12 @@ import KeyPressHandler from './KeyPressHandler.js';
 import BoardMoveHandler from './BoardMoveHandler.js';
 import PieceActionHandler from './PieceActionHandler.js';
 
-export default {
-
-    keyPressHandler: KeyPressHandler,
-    boardMoveHandler: BoardMoveHandler,
-    pieceActionHandler: PieceActionHandler,
-
+class EventsBus {
+    constructor() {
+        this.keyPressHandler = KeyPressHandler;
+        this.boardMoveHandler = BoardMoveHandler;
+        this.pieceActionHandler = PieceActionHandler;
+    }
 
     registerAll() {
 
@@ -18,3 +18,5 @@ export default {
         this.pieceActionHandler.registerAll();
     }
 }
+
+export default EventsBus;

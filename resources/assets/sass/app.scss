@@ -54,6 +54,7 @@ $grassland: #005C09;
 .piece {
     width: 34px;
     height: 34px;
+    cursor: pointer;
     &.king {
         position: absolute;
         img {
