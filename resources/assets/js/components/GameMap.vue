@@ -4,6 +4,11 @@
             <tr v-for="column in tiles">
                 <td v-for="tile in column">
                     <div class="tile" :class="board.terrainClasses(tile)">
+                        <piece
+                            v-if="tile.piece != null"
+                            :piece="tile.piece"
+                        >
+                        </piece>
                     </div>
                 </td>
             </tr>
@@ -14,46 +19,20 @@
 
 <style lang="scss">
 
-$grassland: #005C09;
-$grassland: #005C09;
-
-.game-map table {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.tile {
-    width: 40px;
-    height: 40px;
-    /** border: 1px solid #DDD; **/
-    &.grassland {
-        background-image: url('/images/grass.png');
-    }
-    &.hills {
-        background-image: url('/images/mountains.png');
-    }
-    &.mountain {
-        background-image: url('/images/mountains.png');
-        background-position: right 20px;
-    }
-    &.forest {
-        background-image: url('/images/forest.png');
-    }
-    &.lake {
-        background-image: url('/images/water.png');
-        background-position: right -700px top;
-    }
-}
-
 </style>
 
 <script>
     import EventsBus from './../app/Events/EventsBus.js';
     import Board from './../app/Board/Board.js';
-
-    window.events = new Vue();
+    import Piece from './pieces/Piece.vue';
 
     export default {
+        components: {
+            piece: Piece,
+        },
+        props: [
+            'game'
+        ],
         data() {
             return  {
                 tiles: [],
@@ -95,7 +74,7 @@ $grassland: #005C09;
                     params: {
                         x: this.x,
                         y: this.y,
-                        width: 25
+                        width: 15
                     }
                 }).then(response => {
                     this.tiles = response.body.tiles;
@@ -116,7 +95,7 @@ $grassland: #005C09;
             },
             terrainClasses(tile) {
                 return tile.terrain;
-            }
+            },
         },
     }
 </script>

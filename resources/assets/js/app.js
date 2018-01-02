@@ -14,8 +14,18 @@ require('vue-resource');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('game-map', require('./components/GameMap.vue'));
+import Vue from 'vue';
+import Game from './app/Game/Game.js';
+import GameMap from './components/GameMap.vue';
+
+window.events = new Vue();
 
 const app = new Vue({
     el: '#app',
+    data: {
+        game: Game
+    },
+    components: {
+        gameMap: GameMap,
+    },
 });

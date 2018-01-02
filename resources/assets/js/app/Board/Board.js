@@ -8,7 +8,9 @@ class Board {
     }
 
     findTile(x, y) {
-        var tile;
+        var tile = {
+            terrain: 'grassland'
+        };
 
         this.rows.forEach(function (row) {
             if (row.containsTile(x, y)) {
@@ -20,7 +22,11 @@ class Board {
     }
 
     terrainClasses(tile) {
-        return this.findTile(tile.x, tile.y).terrain;
+        return tile.terrain
+            + ' east-' + this.findTile(tile.x + 1, tile.y).terrain
+            + ' west-' + this.findTile(tile.x - 1, tile.y).terrain
+            + ' north-' + this.findTile(tile.x, tile.y - 1).terrain
+            + ' south-' + this.findTile(tile.x, tile.y + 1).terrain;
     }
 
 }

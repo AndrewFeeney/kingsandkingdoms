@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Acceptance\Map;
 
+use App\Models\Piece;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -90,6 +91,22 @@ class IndexMapTest extends TestCase
         $response->assertJsonFragment([
             'x' => 2,
             'y' => 2,
+        ]);
+    }
+
+    /** @test */
+    public function a_guest_may_query_a_map_of_width_1_with_a_piece()
+    {
+        factory(Piece::class)->states('king')->create()->moveToCoordinates(0, 0);
+
+        $response = $this->json('get', 'map', [
+            'x' => 0,
+            'y' => 0,
+            'width' => 1
+        ]);
+
+        $response->assertJsonFragment([
+            'type' => 'king'
         ]);
     }
 }

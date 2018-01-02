@@ -7,3 +7,63 @@
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+
+$grassland: #005C09;
+$grassland: #005C09;
+
+@function tile-offset($tile-number) {
+    @return $tile-number * 40;
+}
+
+@mixin graphics-tile($tile-set, $tile-number) {
+    background-image: url('/images/#{$tile-set}.png');
+    background-position: right #{tile-offset($tile-number)}px top;
+}
+
+.game-map table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tile {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    &.grassland { 
+        @include graphics-tile('grassland', 1)
+    }
+
+    &.hills {
+        @include graphics-tile('hills', 1);
+    }
+    &.mountain {
+        background-image: url('/images/mountains.png');
+        background-position: right 20px;
+    }
+    &.forest  { 
+        @include graphics-tile('forest', 20)
+    }
+    &.lake {
+        background-image: url('/images/water.png');
+        background-position: right -700px top;
+    }
+}
+
+.piece {
+    width: 34px;
+    height: 34px;
+    &.king {
+        position: absolute;
+        img {
+            clip: rect(0px, 40px, 40px, 0px);
+            position: absolute;
+            bottom: 0px;
+        }
+    }
+    border: 1px solid rgba(0, 0, 0, 0);
+    &.is-selected {
+        border: 1px solid blue;
+    }
+}

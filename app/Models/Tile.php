@@ -11,7 +11,9 @@ class Tile extends Model
 
     public static function getCoordinates($x, $y)
     {
-        $tile = self::where('x', $x)->where('y', $y)->first();
+        $tile = self::where('x', $x)->where('y', $y)
+            ->with('piece')
+            ->first();
 
         if (is_null($tile)) {
             return self::generateTile($x, $y);
@@ -26,6 +28,27 @@ class Tile extends Model
             'x' => $x,
             'y' => $y,
             'terrain' => app(Terrains::class)->random()->slug,
+        ]);
+    }
+
+    public function isOccupied()
+    {
+        return !is_null($this->piece);
+    }
+
+    public function piece()
+    {
+        return $this->belongsTo(Piece::class);
+    }
+
+    public function placePiece(Piece $piece)
+    {
+        if ($this->isOccupied()) {
+            throw new \Exception('There is already a piece at '.$x.', '.$y);
+        }
+
+        return $this->update([
+            'piece_id' => $piece->id
         ]);
     }
 }
