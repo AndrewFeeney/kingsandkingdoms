@@ -6,7 +6,6 @@
  */
 
 require('./bootstrap');
-require('vue-resource');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -20,10 +19,12 @@ import GameMap from './components/GameMap.vue';
 
 window.events = new Vue();
 
+const game = new Game;
+
 const app = new Vue({
     el: '#app',
     data: {
-        game: Game
+        game: game
     },
     components: {
         gameMap: GameMap,

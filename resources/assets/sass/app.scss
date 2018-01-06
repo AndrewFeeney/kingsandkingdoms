@@ -68,3 +68,13 @@ $grassland: #005C09;
         border: 1px solid blue;
     }
 }
+
+.available-move {
+    background: rgba(255, 100, 100, 0.5);
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    &:hover {
+        background: rgba(255, 100, 100, 0.7);
+    }
+}

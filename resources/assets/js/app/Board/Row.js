@@ -1,9 +1,9 @@
 import Tile from './Tile.js';
 
 class Row {
-    constructor(tiles) {
+    constructor(tiles, board) {
         this.tiles = tiles.map(function (tile) {
-            return new Tile(tile);
+            return new Tile(tile, board);
         });
     }
 

@@ -1,16 +1,18 @@
 import Row from './Row.js';
+import Tile from './Tile.js';
+import TileCollection from './TileCollection.js';
 
 class Board {
     constructor(rows) {
+        var _this = this;
+
         this.rows = rows.map(function (row) {
-            return new Row(row);
+            return new Row(row, _this);
         });
     }
 
     findTile(x, y) {
-        var tile = {
-            terrain: 'grassland'
-        };
+        var tile;
 
         this.rows.forEach(function (row) {
             if (row.containsTile(x, y)) {
@@ -18,16 +20,29 @@ class Board {
             }
         });
 
-        return tile;
+        return tile || new Tile({}, this);
     }
 
-    terrainClasses(tile) {
-        return tile.terrain
-            + ' east-' + this.findTile(tile.x + 1, tile.y).terrain
-            + ' west-' + this.findTile(tile.x - 1, tile.y).terrain
-            + ' north-' + this.findTile(tile.x, tile.y - 1).terrain
-            + ' south-' + this.findTile(tile.x, tile.y + 1).terrain;
+    movePieceToTile(piece, tile) {
+        piece.placeOnTile(tile);
+        this.availableMoves().forEach(function(tile) {
+            tile.unmarkAsAvailableMove();
+        });
     }
 
+    availableMoves() {
+        return new TileCollection(
+            this.tiles().filter(function (tile) {
+                return tile.isAvailableMove;
+            })
+        );
+    }
+
+    tiles() {
+        return this.rows.reduce(function (rows, row) {
+            return rows.concat(row.tiles);
+        }, []);
+    }
 }
+
 export default Board;

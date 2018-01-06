@@ -7,12 +7,15 @@
 <script>
     export default {
         props: [
-            'piece'
+            'piece',
+            'game'
         ],
         data() {
             return  {
                 isSelected: false,
             };
+        },
+        created() {
         },
         computed: {
             imageUri() {
@@ -34,8 +37,11 @@
         },
         methods: {
             selectPiece() {
-                events.$emit('piece.selected', this.piece);
+                events.$emit('piece.select', this.piece);
                 this.isSelected = true;
+            },
+            availableMoves() {
+                return this.gamePiece.availableMoves();
             }
         }
     }

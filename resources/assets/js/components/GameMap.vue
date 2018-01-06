@@ -1,43 +1,58 @@
 <template>
-    <div class="game-map">
-        <table>
-            <tr v-for="column in tiles">
-                <td v-for="tile in column">
-                    <div class="tile" :class="board.terrainClasses(tile)">
-                        <piece
-                            v-if="tile.piece != null"
-                            :piece="tile.piece"
-                        >
-                        </piece>
-                    </div>
-                </td>
-            </tr>
-        </table>
-        X: {{ x }}, Y: {{ y }}
+    <div class="game-map row">
+        <div class="col-xs-3">
+            <div class="game-info-panel panel panel-default">
+                <div class="panel-heading">
+                    Game Info
+                </div>
+                <div class="panel-body">
+                    X: {{ x }}, Y: {{ y }}
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <table>
+                <row
+                    v-for="(row, index) in game.board.rows"
+                    :row="row"
+                    :game="game"
+                    :key="index"
+                >
+                </row>
+            </table>
+        </div>
+        <div class="col-xs-3">
+            <div class="game-info-panel panel panel-default">
+                <div class="panel-heading">
+                    Selected Piece
+                </div>
+                <div class="panel-body">
+                    {{ selectedPiece.type }}
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
-<style lang="scss">
-
-</style>
-
 <script>
     import Board from './../app/Board/Board.js';
-    import Piece from './pieces/Piece.vue';
+    import Row from './Row.vue';
 
     export default {
         components: {
-            piece: Piece,
+            row: Row
         },
         props: [
             'game'
         ],
         data() {
             return  {
-                tiles: [],
                 x: 0,
                 y: 0,
-                board: null,
+                selectedPiece: {
+                    type: null,
+                },
+                availableMoves: [],
             }
         },
         created() {
@@ -49,9 +64,9 @@
             events.$on('y.shift', function(newValue) {
                 _this.y = _this.y + newValue;
             });
-        },
-        mounted() {
-            this.getBoardState();
+            events.$on('piece.selected', function (piece) {
+                _this.selectedPiece = piece;
+            });
         },
         watch: {
             x(newValue) {
@@ -62,36 +77,24 @@
             },
             tiles(newValue) {
                 this.board = new Board(newValue);
-            }
+            },
+            availableMoves(newValue) {
+                var _this = this;
+
+                this.availableMoves.forEach(function (availableMove) {
+                    _this.markTileAsAvailableMove(availableMove.x, availableMove.y);
+                });
+            },
         },
         methods: {
-            getBoardState() {
-                this.$http.get('/map', {
-                    params: {
-                        x: this.x,
-                        y: this.y,
-                        width: 15
-                    }
-                }).then(response => {
-                    this.tiles = response.body.tiles;
-                });
-            },
-            findTile(x, y) {
-                var tile;
-
-                this.tiles.forEach(function (row) {
-                    row.forEach(function (rowTile) {
-                        if (rowTile.x == x && rowTile.y == y) {
-                            tile = rowTile;
-                        }
-                    });
-                });
-
-                return tile;
-            },
-            terrainClasses(tile) {
-                return tile.terrain;
-            },
+            makePiece(piece) {
+                return new Piece(piece, this.game);
+            }
         },
+        computed: {
+            board() {
+                return this.game.board;
+            }
+        }
     }
 </script>
